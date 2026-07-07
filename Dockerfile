@@ -1,6 +1,9 @@
 FROM php:8.2-apache
 
-RUN a2enmod rewrite
+# บังคับใช้ mpm_prefork ตัวเดียว (บาง base image เปิด mpm_event ค้างไว้พร้อมกัน
+# ทำให้ apache2 start ไม่ขึ้น: "AH00534: More than one MPM loaded")
+RUN a2dismod mpm_event 2>/dev/null || true
+RUN a2enmod mpm_prefork rewrite
 
 # ชี้ document root ไปที่ public/ ตามโครงสร้างโปรเจกต์
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
