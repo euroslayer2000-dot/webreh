@@ -30,4 +30,4 @@ RUN echo "=== mods-enabled ===" \
     && (apache2ctl -M 2>&1 || true)
 
 EXPOSE $PORT
-CMD ["apache2-foreground"]
+CMD sh -c 'echo "=== RUNTIME mods-enabled ==="; ls -la /etc/apache2/mods-enabled/; echo "=== RUNTIME apache2ctl -M ==="; apache2ctl -M 2>&1; exec apache2-foreground'
