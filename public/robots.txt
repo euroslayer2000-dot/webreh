@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+# แก้โดเมนให้ตรงกับเว็บจริงตอน deploy
+Sitemap: http://localhost/school-website/public/sitemap.xml

@@ -1,0 +1,29 @@
+# public/.htaccess
+# ส่งทุก request ที่ไม่ใช่ไฟล์/โฟลเดอร์จริง ไปที่ index.php
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # ถ้าติดตั้งในโฟลเดอร์ย่อย ให้ปรับ RewriteBase ตามจริง เช่น /school-website/public/
+    # RewriteBase /school-website/public/
+
+    # ไม่ rewrite ถ้าเป็นไฟล์หรือโฟลเดอร์ที่มีอยู่จริง (เช่น รูป, css, js)
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# ---------- security headers พื้นฐาน ----------
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ห้ามเข้าถึงไฟล์ .env, .sql, .md โดยตรง (กันเผลอวางผิดที่)
+<FilesMatch "\.(env|sql|md|log)$">
+    Require all denied
+</FilesMatch>
+
+# ปิด directory listing
+Options -Indexes
