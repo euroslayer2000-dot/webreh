@@ -1,12 +1,15 @@
 FROM php:8.2-apache
 
-RUN a2enmod rewrite
+RUN a2enmod rewrite headers
 RUN docker-php-ext-install pdo_mysql mysqli
 
 # ชี้ document root ไปที่ public/ ตามโครงสร้างโปรเจกต์
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
+
+# อนุญาตให้ .htaccess override ได้ (จำเป็นสำหรับ mod_rewrite ที่ทำ routing ทุก URL ไปที่ index.php)
+RUN sed -ri -e 's!AllowOverride None!AllowOverride All!g' /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html
 COPY . .
