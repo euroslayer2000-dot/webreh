@@ -1,6 +1,7 @@
 FROM php:8.2-apache
 
 RUN a2enmod rewrite
+RUN docker-php-ext-install pdo_mysql mysqli
 
 # ชี้ document root ไปที่ public/ ตามโครงสร้างโปรเจกต์
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
