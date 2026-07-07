@@ -21,5 +21,13 @@ RUN chmod -R 775 storage 2>/dev/null || true
 # Railway กำหนด port ผ่าน $PORT
 RUN sed -i "s/80/\${PORT}/g" /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf
 
+# --- diagnostic: หา MPM ที่ยังโหลดซ้ำอยู่จริง (จะไม่ทำให้ build fail) ---
+RUN echo "=== mods-enabled ===" \
+    && ls -la /etc/apache2/mods-enabled/ \
+    && echo "=== grep LoadModule .*mpm ทั้งต้นไม้ /etc/apache2 ===" \
+    && (grep -rn "LoadModule" /etc/apache2/ 2>/dev/null | grep -i mpm || echo "(no LoadModule mpm lines found anywhere)") \
+    && echo "=== apache2ctl -M ===" \
+    && (apache2ctl -M 2>&1 || true)
+
 EXPOSE $PORT
 CMD ["apache2-foreground"]
