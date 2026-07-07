@@ -1,11 +1,12 @@
 FROM php:8.2-apache
 
-# บังคับใช้ mpm_prefork ตัวเดียว (ปิดทุก MPM อื่นที่อาจถูกเปิดค้างไว้ในเบสอิมเมจ
-# ทำให้ apache2 start ไม่ขึ้น: "AH00534: More than one MPM loaded")
-RUN for m in event worker itk; do a2dismod mpm_$m 2>/dev/null || true; done \
-    && a2enmod mpm_prefork rewrite \
+# ปิด MPM module แบบ dynamic ทั้งหมด (รวม prefork) เพราะ mpm ตัวที่ใช้จริง
+# ถูก compile แบบ static เข้าไปใน apache2 binary ของอิมเมจนี้อยู่แล้ว
+# การเปิดซ้ำแบบ dynamic ทำให้เกิด "AH00534: More than one MPM loaded"
+RUN for m in event worker itk prefork; do a2dismod mpm_$m 2>/dev/null || true; done \
+    && a2enmod rewrite \
     && echo "---mods-enabled (mpm)---" \
-    && ls -la /etc/apache2/mods-enabled/ | grep -i mpm
+    && (ls -la /etc/apache2/mods-enabled/ | grep -i mpm || echo "(none enabled - using static MPM)")
 
 # ชี้ document root ไปที่ public/ ตามโครงสร้างโปรเจกต์
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
