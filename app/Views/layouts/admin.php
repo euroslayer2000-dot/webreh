@@ -46,7 +46,7 @@ $isActive = fn(string $p) => str_contains((string) $current, $p) ? 'active' : ''
             <ul class="sidebar-nav">
                 <li><a class="<?= $isActive('/admin/dashboard') ?>" href="<?= $base ?>/admin/dashboard">📊 แดชบอร์ด</a></li>
                 <li><a class="<?= $isActive('/admin/news') ?>" href="<?= $base ?>/admin/news">📰 จัดการข่าว</a></li>
-                <li><a class="<?= $isActive('/admin/teachers') ?>" href="<?= $base ?>/admin/teachers">👨‍🏫 บุคลากร</a></li>
+                <li><a class="<?= $isActive('/admin/teachers') ?>" href="<?= $base ?>/admin/teachers">🚑 เจ้าหน้าที่</a></li>
                 <li><a class="<?= $isActive('/admin/gallery') ?>" href="<?= $base ?>/admin/gallery">🖼️ แกลเลอรี</a></li>
                 <li><a class="<?= $isActive('/admin/downloads') ?>" href="<?= $base ?>/admin/downloads">📄 เอกสาร</a></li>
                 <li><a class="<?= $isActive('/admin/banners') ?>" href="<?= $base ?>/admin/banners">🎞️ แบนเนอร์</a></li>

@@ -1,14 +1,14 @@
 /* ============================================================
-   style.css — เว็บไซต์โรงเรียน (ธีมแดง-เหลือง)
+   style.css — หน่วยบริการการแพทย์ฉุกเฉิน (ธีมเขียวนีออน)
    ระบบสีใช้ CSS variables รองรับ Dark Mode ผ่าน [data-theme="dark"]
    ============================================================ */
 
 :root {
-    /* โทนสีโรงเรียน */
-    --brand-red:     #B01E28;   /* แดงเข้มดูเป็นทางการ */
-    --brand-red-dk:  #8A141C;
-    --brand-gold:    #F2B705;   /* เหลืองทอง */
-    --brand-gold-dk: #D99A00;
+    /* โทนสีนีออนเขียว */
+    --brand-red:     #16D66B;   /* เขียวนีออนหลัก ใช้เป็นสีข้อความ/ปุ่ม */
+    --brand-red-dk:  #0B7A3D;   /* เขียวเข้ม ใช้ hover/พื้นหลัง */
+    --brand-gold:    #39FF14;   /* เขียวนีออนสว่าง ใช้เน้น/glow */
+    --brand-gold-dk: #2ECC0F;
 
     /* พื้นผิว/ตัวอักษร (โหมดสว่าง) */
     --bg:        #FFFCF7;
@@ -22,7 +22,7 @@
     --radius-sm: 10px;
     --shadow-sm: 0 1px 3px rgba(34,28,24,.06), 0 1px 2px rgba(34,28,24,.04);
     --shadow-md: 0 8px 24px rgba(34,28,24,.08);
-    --shadow-lg: 0 20px 48px rgba(138,20,28,.14);
+    --shadow-lg: 0 20px 48px rgba(22,214,107,.25);
 
     --font-display: 'IBM Plex Sans Thai', system-ui, sans-serif;
     --font-body:    'Sarabun', system-ui, sans-serif;
@@ -39,8 +39,8 @@
     --ink-soft:  #B7AC9C;
     --line:      #3A3025;
     --shadow-md: 0 8px 24px rgba(0,0,0,.4);
-    --shadow-lg: 0 20px 48px rgba(0,0,0,.5);
-    --brand-gold: #F6C531;
+    --shadow-lg: 0 20px 48px rgba(57,255,20,.3);
+    --brand-gold: #4DFF35;
 }
 
 /* ---------- รีเซ็ตพื้นฐาน ---------- */

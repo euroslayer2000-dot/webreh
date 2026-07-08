@@ -38,21 +38,21 @@ $base = config('app.url');
 <section class="hero">
     <div class="container hero-grid">
         <div class="reveal in">
-            <span class="eyebrow">ยินดีต้อนรับ EMS โรงพยาบาลร้อยเอ็ด </span>
+            <span class="eyebrow">ยินดีต้อนรับสู่หน่วยบริการการแพทย์ฉุกเฉิน</span>
             <h1><?= Controller::e(Setting::get('site_name')) ?><br>
                 <span class="accent">มุ่งสู่ความเป็นเลิศ</span>
             </h1>
-            <p class="lead"><?= Controller::e(Setting::get('site_tagline', 'พัฒนาผู้เรียนอย่างรอบด้าน สู่พลเมืองคุณภาพของสังคม')) ?></p>
+            <p class="lead"><?= Controller::e(Setting::get('site_tagline', 'ช่วยเหลือฉุกเฉิน รวดเร็ว ปลอดภัย ใส่ใจทุกชีวิต')) ?></p>
             <div class="hero-cta">
                 <a href="<?= $base ?>/news" class="btn btn-primary">ข่าวประชาสัมพันธ์ →</a>
-                <a href="#about" class="btn btn-ghost">รู้จักโรงเรียน</a>
+                <a href="#about" class="btn btn-ghost">รู้จักหน่วยงาน</a>
             </div>
         </div>
         <div class="hero-visual reveal in">
-            <div class="hero-emblem">🏫</div>
+            <div class="hero-emblem">🚑</div>
             <div class="glass">
                 <strong><?= Controller::e(Setting::get('site_name')) ?></strong><br>
-                <span style="opacity:.9;font-size:.9rem">แหล่งเรียนรู้คู่ชุมชน</span>
+                <span style="opacity:.9;font-size:.9rem">พร้อมช่วยเหลือคุณตลอด 24 ชั่วโมง</span>
             </div>
         </div>
     </div>
@@ -63,11 +63,11 @@ $base = config('app.url');
     <div class="container stats-grid">
         <div class="stat">
             <div class="num" data-target="<?= (int) $stats['students'] ?>">0</div>
-            <div class="label">นักเรียน</div>
+            <div class="label">ผู้ป่วยที่ให้การช่วยเหลือ</div>
         </div>
         <div class="stat">
             <div class="num" data-target="<?= (int) $stats['teachers'] ?>">0</div>
-            <div class="label">ครูและบุคลากร</div>
+            <div class="label">เจ้าหน้าที่กู้ชีพ</div>
         </div>
         <div class="stat">
             <div class="num" data-target="<?= (int) $stats['news'] ?>">0</div>
@@ -86,7 +86,7 @@ $base = config('app.url');
         <div class="section-head reveal">
             <span class="eyebrow">อัปเดตล่าสุด</span>
             <h2>ข่าวประชาสัมพันธ์</h2>
-            <p>ติดตามข่าวสาร กิจกรรม และประกาศต่าง ๆ ของโรงเรียน</p>
+            <p>ติดตามข่าวสาร กิจกรรม และประกาศต่าง ๆ ของหน่วยงาน</p>
         </div>
 
         <?php if (empty($latestNews)): ?>
@@ -167,7 +167,7 @@ $base = config('app.url');
                 <div class="ico">📢</div><span>ข่าวสาร</span>
             </a>
             <a href="<?= $base ?>/personnel" class="quicklink reveal">
-                <div class="ico">👨‍🏫</div><span>บุคลากร</span>
+                <div class="ico">🚑</div><span>เจ้าหน้าที่</span>
             </a>
             <a href="<?= $base ?>/downloads" class="quicklink reveal">
                 <div class="ico">📄</div><span>ดาวน์โหลดเอกสาร</span>

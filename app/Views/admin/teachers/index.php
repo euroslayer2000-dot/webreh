@@ -1,6 +1,6 @@
 <?php
 /**
- * admin/teachers/index.php — ตารางบุคลากร
+ * admin/teachers/index.php — ตารางเจ้าหน้าที่
  * ตัวแปร: $teachers
  */
 use App\Core\Controller;
@@ -9,11 +9,11 @@ $base = config('app.url');
 ?>
 <div class="panel">
     <div class="panel-head">
-        <h2>บุคลากรทั้งหมด (<?= count($teachers) ?>)</h2>
-        <a href="<?= $base ?>/admin/teachers/create" class="btn btn-primary btn-sm">+ เพิ่มบุคลากร</a>
+        <h2>เจ้าหน้าที่ทั้งหมด (<?= count($teachers) ?>)</h2>
+        <a href="<?= $base ?>/admin/teachers/create" class="btn btn-primary btn-sm">+ เพิ่มเจ้าหน้าที่</a>
     </div>
     <?php if (empty($teachers)): ?>
-        <div class="empty-state"><div class="ico">👥</div><p>ยังไม่มีข้อมูลบุคลากร</p></div>
+        <div class="empty-state"><div class="ico">👥</div><p>ยังไม่มีข้อมูลเจ้าหน้าที่</p></div>
     <?php else: ?>
     <table class="data">
         <thead>

@@ -28,7 +28,7 @@ $base = config('app.url');
                 <iframe
                     src="https://www.google.com/maps?q=<?= urlencode(Setting::get('contact_address')) ?>&output=embed"
                     loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-                    title="แผนที่โรงเรียน"></iframe>
+                    title="แผนที่หน่วยงาน"></iframe>
             </div>
         </div>
 
@@ -68,7 +68,7 @@ $base = config('app.url');
                 <!-- PDPA consent -->
                 <label class="consent-box">
                     <input type="checkbox" name="consent" value="1" required>
-                    <span>ข้าพเจ้ายินยอมให้โรงเรียนจัดเก็บและใช้ข้อมูลส่วนบุคคลข้างต้น
+                    <span>ข้าพเจ้ายินยอมให้หน่วยงานจัดเก็บและใช้ข้อมูลส่วนบุคคลข้างต้น
                     เพื่อวัตถุประสงค์ในการติดต่อกลับ ตามนโยบายความเป็นส่วนตัว (PDPA)</span>
                 </label>
 

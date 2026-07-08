@@ -6,7 +6,7 @@
 use App\Core\Controller;
 use App\Models\Setting;
 
-$siteName = Setting::get('site_name', 'โรงเรียนตัวอย่าง');
+$siteName = Setting::get('site_name', 'หน่วยบริการการแพทย์ฉุกเฉิน');
 $title    = ($pageTitle ?? '') !== '' ? "{$pageTitle} — {$siteName}" : $siteName;
 $desc     = $metaDesc ?? Setting::get('meta_description');
 $keywords = Setting::get('meta_keywords');
@@ -65,7 +65,7 @@ $flash    = Controller::getFlash();
             <ul class="nav-links">
                 <li><a href="<?= $base ?>/">หน้าแรก</a></li>
                 <li><a href="<?= $base ?>/news">ข่าวสาร</a></li>
-                <li><a href="<?= $base ?>/personnel">บุคลากร</a></li>
+                <li><a href="<?= $base ?>/personnel">เจ้าหน้าที่</a></li>
                 <li><a href="<?= $base ?>/gallery">แกลเลอรี</a></li>
                 <li><a href="<?= $base ?>/downloads">ดาวน์โหลด</a></li>
                 <li><a href="<?= $base ?>/contact">ติดต่อ</a></li>
@@ -98,7 +98,7 @@ $flash    = Controller::getFlash();
                 <h4>ลิงก์ด่วน</h4>
                 <ul class="footer-links">
                     <li><a href="<?= $base ?>/news">ข่าวประชาสัมพันธ์</a></li>
-                    <li><a href="<?= $base ?>/#about">เกี่ยวกับโรงเรียน</a></li>
+                    <li><a href="<?= $base ?>/#about">เกี่ยวกับหน่วยงาน</a></li>
                     <li><a href="<?= $base ?>/#gallery">แกลเลอรี</a></li>
                 </ul>
             </div>
@@ -106,7 +106,7 @@ $flash    = Controller::getFlash();
                 <h4>บริการ</h4>
                 <ul class="footer-links">
                     <li><a href="#">ดาวน์โหลดเอกสาร</a></li>
-                    <li><a href="#">บุคลากร</a></li>
+                    <li><a href="#">เจ้าหน้าที่</a></li>
                     <li><a href="<?= $base ?>/admin/login">สำหรับเจ้าหน้าที่</a></li>
                 </ul>
             </div>

@@ -1,6 +1,6 @@
 <?php
 /**
- * personnel/index.php — บุคลากร จัดกลุ่มตามกลุ่มสาระ
+ * personnel/index.php — เจ้าหน้าที่ จัดกลุ่มตามกลุ่มสาระ
  * ตัวแปร: $groups (dept => teachers[])
  */
 use App\Core\Controller;
@@ -8,15 +8,15 @@ $base = config('app.url');
 ?>
 <div class="page-head">
     <div class="container">
-        <div class="breadcrumb"><a href="<?= $base ?>/">หน้าแรก</a> / บุคลากร</div>
-        <h1>บุคลากร</h1>
+        <div class="breadcrumb"><a href="<?= $base ?>/">หน้าแรก</a> / เจ้าหน้าที่</div>
+        <h1>เจ้าหน้าที่</h1>
     </div>
 </div>
 
 <section class="section">
     <div class="container">
         <?php if (empty($groups)): ?>
-            <div class="empty-state"><div class="ico">👥</div><p>ยังไม่มีข้อมูลบุคลากร</p></div>
+            <div class="empty-state"><div class="ico">👥</div><p>ยังไม่มีข้อมูลเจ้าหน้าที่</p></div>
         <?php else: ?>
             <?php foreach ($groups as $dept => $members): ?>
                 <div class="dept-block reveal">

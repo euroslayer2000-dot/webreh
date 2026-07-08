@@ -1,6 +1,6 @@
 <?php
 /**
- * admin/teachers/form.php — ฟอร์มเพิ่ม/แก้ไขบุคลากร
+ * admin/teachers/form.php — ฟอร์มเพิ่ม/แก้ไขเจ้าหน้าที่
  * ตัวแปร: $teacher (null = เพิ่มใหม่)
  */
 use App\Core\Controller;
@@ -20,11 +20,11 @@ $active = $isEdit ? (int) ($teacher['is_active'] ?? 1) === 1 : true;
     <div class="form-row">
         <div class="form-group">
             <label for="position">ตำแหน่ง</label>
-            <input type="text" id="position" name="position" class="form-control" value="<?= Controller::e((string) $val('position')) ?>" placeholder="เช่น ครูชำนาญการ">
+            <input type="text" id="position" name="position" class="form-control" value="<?= Controller::e((string) $val('position')) ?>" placeholder="เช่น เจ้าหน้าที่กู้ชีพระดับสูง">
         </div>
         <div class="form-group">
-            <label for="department">กลุ่มสาระ / ฝ่าย</label>
-            <input type="text" id="department" name="department" class="form-control" value="<?= Controller::e((string) $val('department')) ?>" placeholder="เช่น กลุ่มสาระวิทยาศาสตร์">
+            <label for="department">หน่วย / ฝ่าย</label>
+            <input type="text" id="department" name="department" class="form-control" value="<?= Controller::e((string) $val('department')) ?>" placeholder="เช่น หน่วยปฏิบัติการฉุกเฉิน">
         </div>
     </div>
     <div class="form-row">
@@ -50,7 +50,7 @@ $active = $isEdit ? (int) ($teacher['is_active'] ?? 1) === 1 : true;
         <span>แสดงบนหน้าเว็บ</span>
     </label>
     <div class="form-actions">
-        <button type="submit" class="btn btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มบุคลากร' ?></button>
+        <button type="submit" class="btn btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มเจ้าหน้าที่' ?></button>
         <a href="<?= $base ?>/admin/teachers" class="btn btn-ghost">ยกเลิก</a>
     </div>
 </form>

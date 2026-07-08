@@ -26,7 +26,7 @@ $base = config('app.url');
         <h2>เริ่มต้นใช้งาน</h2>
     </div>
     <div style="padding:1.4rem">
-        <p>ยินดีต้อนรับสู่ระบบจัดการเว็บไซต์โรงเรียน คุณสามารถเริ่มต้นได้จาก:</p>
+        <p>ยินดีต้อนรับสู่ระบบจัดการเว็บไซต์หน่วยบริการการแพทย์ฉุกเฉิน คุณสามารถเริ่มต้นได้จาก:</p>
         <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:1rem">
             <a href="<?= $base ?>/admin/news/create" class="btn btn-primary">+ เพิ่มข่าวใหม่</a>
             <a href="<?= $base ?>/admin/news" class="btn btn-ghost">จัดการข่าวทั้งหมด</a>
