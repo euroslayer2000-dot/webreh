@@ -167,4 +167,39 @@ final class AuthController extends Controller
         $this->flash('success', 'ตั้งรหัสผ่านใหม่เรียบร้อยแล้ว กรุณาเข้าสู่ระบบ');
         $this->redirect('/admin/login');
     }
+
+    // ==================== บังคับเปลี่ยนรหัสผ่านครั้งแรก (Phase 5) ====================
+
+    /** แสดงฟอร์มบังคับเปลี่ยนรหัสผ่าน (หลัง super_admin ตั้งรหัสผ่านเริ่มต้นให้) */
+    public function showChangePassword(): void
+    {
+        Auth::require();
+        $this->view('admin/auth/change-password', ['pageTitle' => 'เปลี่ยนรหัสผ่าน'], 'layouts/admin');
+    }
+
+    public function changePassword(): void
+    {
+        Auth::require();
+        if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
+            $this->flash('error', 'เซสชันหมดอายุ กรุณาลองใหม่');
+            $this->redirect('/admin/change-password');
+        }
+
+        $password = (string) ($_POST['password'] ?? '');
+        $confirm  = (string) ($_POST['password_confirm'] ?? '');
+
+        if (mb_strlen($password) < 8) {
+            $this->flash('error', 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร');
+            $this->redirect('/admin/change-password');
+        }
+        if ($password !== $confirm) {
+            $this->flash('error', 'รหัสผ่านทั้งสองช่องไม่ตรงกัน');
+            $this->redirect('/admin/change-password');
+        }
+
+        User::updatePassword(Auth::id(), password_hash($password, PASSWORD_DEFAULT));
+        Auth::clearMustChangePassword();
+        $this->flash('success', 'เปลี่ยนรหัสผ่านเรียบร้อยแล้ว');
+        $this->redirect('/admin/dashboard');
+    }
 }

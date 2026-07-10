@@ -30,14 +30,14 @@ $roleLabels = ['super_admin' => 'ผู้ดูแลระบบ', 'editor' =>
                 <td><?= Controller::e($roleLabels[$u['role']] ?? $u['role']) ?></td>
                 <td><?= (int) $u['is_active'] === 1
                         ? '<span class="badge badge-published">เปิดใช้งาน</span>'
-                        : '<span class="badge badge-draft">ปิดใช้งาน</span>' ?></td>
+                        : '<span class="badge badge-draft">ปิดใช้งาน</span>' ?>
+                    <?php if (!empty($u['must_change_password'])): ?>
+                        <span class="badge">รอเปลี่ยนรหัสผ่าน</span>
+                    <?php endif; ?>
+                </td>
                 <td>
                     <div class="actions-cell" style="justify-content:flex-end">
                         <a href="<?= $base ?>/admin/users/edit/<?= (int) $u['id'] ?>" class="btn btn-ghost btn-sm">แก้ไข</a>
-                        <form method="post" action="<?= $base ?>/admin/users/resend-invite/<?= (int) $u['id'] ?>" style="display:inline">
-                            <?= Csrf::field() ?>
-                            <button type="submit" class="btn btn-ghost btn-sm">ส่งลิงก์เชิญใหม่</button>
-                        </form>
                         <?php if (!$isSelf): ?>
                         <form method="post" action="<?= $base ?>/admin/users/toggle/<?= (int) $u['id'] ?>" style="display:inline">
                             <?= Csrf::field() ?>

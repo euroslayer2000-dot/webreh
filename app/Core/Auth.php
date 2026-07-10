@@ -20,10 +20,11 @@ final class Auth
     {
         session_regenerate_id(true);
         $_SESSION['user'] = [
-            'id'    => (int) $user['id'],
-            'name'  => $user['name'],
-            'email' => $user['email'],
-            'role'  => $user['role'],
+            'id'                   => (int) $user['id'],
+            'name'                 => $user['name'],
+            'email'                => $user['email'],
+            'role'                 => $user['role'],
+            'must_change_password' => !empty($user['must_change_password']),
         ];
     }
 
@@ -60,6 +61,30 @@ final class Auth
             header('Location: ' . config('app.url') . '/admin/login');
             exit;
         }
+        if (self::mustChangePassword() && !self::isChangePasswordRequest()) {
+            header('Location: ' . config('app.url') . '/admin/change-password');
+            exit;
+        }
+    }
+
+    /** ต้องเปลี่ยนรหัสผ่านก่อนใช้งานหน้าอื่นหรือไม่ (super_admin ตั้งรหัสผ่านเริ่มต้นให้) */
+    public static function mustChangePassword(): bool
+    {
+        return !empty(self::user()['must_change_password']);
+    }
+
+    /** ล้างสถานะบังคับเปลี่ยนรหัสผ่านใน session (เรียกหลังเปลี่ยนรหัสผ่านสำเร็จ) */
+    public static function clearMustChangePassword(): void
+    {
+        if (isset($_SESSION['user'])) {
+            $_SESSION['user']['must_change_password'] = false;
+        }
+    }
+
+    private static function isChangePasswordRequest(): bool
+    {
+        $path = (string) (parse_url($_SERVER['REQUEST_URI'] ?? '', PHP_URL_PATH) ?? '');
+        return str_ends_with(rtrim($path, '/'), '/admin/change-password');
     }
 
     /** เช็คว่า role ปัจจุบันอยู่ในรายการที่อนุญาตหรือไม่ */

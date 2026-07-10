@@ -89,11 +89,11 @@ final class User
         return $stmt->fetch() ?: null;
     }
 
-    /** ตั้งรหัสผ่านใหม่ + ล้าง token */
+    /** ตั้งรหัสผ่านใหม่ + ล้าง token (ผู้ใช้ตั้งเอง ไม่บังคับเปลี่ยนอีก) */
     public static function updatePassword(int $userId, string $passwordHash): void
     {
         $stmt = Database::connection()->prepare(
-            'UPDATE users SET password_hash = :p, reset_token = NULL, reset_expires = NULL,
+            'UPDATE users SET password_hash = :p, must_change_password = 0, reset_token = NULL, reset_expires = NULL,
                 failed_attempts = 0, locked_until = NULL WHERE id = :id'
         );
         $stmt->execute(['p' => $passwordHash, 'id' => $userId]);
@@ -104,7 +104,7 @@ final class User
     public static function all(): array
     {
         $stmt = Database::connection()->query(
-            'SELECT id, name, email, role, is_active, created_at FROM users ORDER BY name'
+            'SELECT id, name, email, role, is_active, must_change_password, created_at FROM users ORDER BY name'
         );
         return $stmt->fetchAll();
     }
@@ -129,12 +129,12 @@ final class User
         return (bool) $stmt->fetch();
     }
 
-    /** สร้างผู้ใช้ใหม่ (password_hash เป็นค่าสุ่มชั่วคราว รอผู้ใช้ตั้งรหัสผ่านผ่านลิงก์เชิญ) */
+    /** สร้างผู้ใช้ใหม่ (super_admin ตั้งรหัสผ่านเริ่มต้นให้ บังคับเปลี่ยนตอนล็อกอินครั้งแรก) */
     public static function create(array $data): int
     {
         $stmt = Database::connection()->prepare(
-            'INSERT INTO users (name, email, password_hash, role, is_active)
-             VALUES (:name, :email, :password_hash, :role, :is_active)'
+            'INSERT INTO users (name, email, password_hash, role, is_active, must_change_password)
+             VALUES (:name, :email, :password_hash, :role, :is_active, 1)'
         );
         $stmt->execute([
             'name'          => $data['name'],
@@ -144,6 +144,16 @@ final class User
             'is_active'     => $data['is_active'],
         ]);
         return (int) Database::connection()->lastInsertId();
+    }
+
+    /** super_admin ตั้งรหัสผ่านใหม่ให้ผู้ใช้คนอื่น — บังคับเปลี่ยนตอนล็อกอินครั้งถัดไป */
+    public static function setPasswordByAdmin(int $userId, string $passwordHash): void
+    {
+        $stmt = Database::connection()->prepare(
+            'UPDATE users SET password_hash = :p, must_change_password = 1,
+                failed_attempts = 0, locked_until = NULL WHERE id = :id'
+        );
+        $stmt->execute(['p' => $passwordHash, 'id' => $userId]);
     }
 
     /** แก้ไขข้อมูลผู้ใช้ (ไม่แตะ password_hash) */

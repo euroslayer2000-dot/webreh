@@ -3,8 +3,8 @@
  * app/Controllers/Admin/UserController.php
  * -----------------------------------------
  * จัดการผู้ใช้งานหลังบ้าน (super_admin เท่านั้น)
- * - สร้างผู้ใช้ใหม่: ไม่มีการตั้งรหัสผ่านโดยตรง ระบบส่งลิงก์เชิญให้ผู้ใช้ตั้งรหัสผ่านเอง
- *   (ใช้กลไก reset_token/reset_expires เดียวกับหน้าลืมรหัสผ่าน)
+ * - สร้าง/ตั้งรหัสผ่านใหม่: super_admin ตั้งรหัสผ่านเริ่มต้นให้โดยตรง
+ *   ระบบจะบังคับให้ผู้ใช้เปลี่ยนรหัสผ่านทันทีตอนล็อกอินครั้งถัดไป
  * - กันไม่ให้แก้ไข/ปิดใช้งาน/ลบบัญชีตนเอง และกันไม่ให้เหลือ super_admin ที่ active 0 คน
  */
 
@@ -15,7 +15,6 @@ namespace App\Controllers\Admin;
 use App\Core\Controller;
 use App\Core\Auth;
 use App\Core\Csrf;
-use App\Core\Mailer;
 use App\Models\User;
 
 final class UserController extends Controller
@@ -51,12 +50,17 @@ final class UserController extends Controller
             $this->redirect('/admin/users/create');
         }
 
-        $data['password_hash'] = password_hash(bin2hex(random_bytes(32)), PASSWORD_DEFAULT);
-        $userId = User::create($data);
+        $password = $this->validatePassword($_POST, true);
+        if ($password === null) {
+            $this->withInput($_POST);
+            $this->redirect('/admin/users/create');
+        }
+
+        $data['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
+        User::create($data);
         self::clearOld();
 
-        $this->sendInviteEmail(User::find($userId));
-        $this->flash('success', 'เพิ่มผู้ใช้งานเรียบร้อยแล้ว ระบบได้ส่งอีเมลเชิญให้ตั้งรหัสผ่านแล้ว');
+        $this->flash('success', 'เพิ่มผู้ใช้งานเรียบร้อยแล้ว ระบบจะบังคับให้ตั้งรหัสผ่านใหม่ตอนล็อกอินครั้งแรก');
         $this->redirect('/admin/users');
     }
 
@@ -91,9 +95,22 @@ final class UserController extends Controller
             $this->redirect("/admin/users/edit/{$targetId}");
         }
 
+        $passwordProvided = trim((string) ($_POST['password'] ?? '')) !== '';
+        $password = null;
+        if ($passwordProvided) {
+            $password = $this->validatePassword($_POST, false);
+            if ($password === null) {
+                $this->withInput($_POST);
+                $this->redirect("/admin/users/edit/{$targetId}");
+            }
+        }
+
         $this->guardSelfAndLastAdmin($targetId, $existing, $data['role'], (bool) $data['is_active'], "/admin/users/edit/{$targetId}");
 
         User::update($targetId, $data);
+        if ($password !== null) {
+            User::setPasswordByAdmin($targetId, password_hash($password, PASSWORD_DEFAULT));
+        }
         self::clearOld();
         $this->flash('success', 'อัปเดตข้อมูลผู้ใช้งานเรียบร้อยแล้ว');
         $this->redirect('/admin/users');
@@ -146,21 +163,6 @@ final class UserController extends Controller
         $this->redirect('/admin/users');
     }
 
-    public function resendInvite(string $id): void
-    {
-        Auth::requireRole(['super_admin']);
-        $this->guardCsrf('/admin/users');
-        $user = User::find((int) $id);
-        if ($user === null) {
-            $this->flash('error', 'ไม่พบข้อมูลผู้ใช้งาน');
-            $this->redirect('/admin/users');
-        }
-
-        $this->sendInviteEmail($user);
-        $this->flash('success', 'ส่งลิงก์เชิญตั้งรหัสผ่านใหม่เรียบร้อยแล้ว');
-        $this->redirect('/admin/users');
-    }
-
     // ---------- ภายใน ----------
 
     private function guardCsrf(string $redirect): void
@@ -203,6 +205,26 @@ final class UserController extends Controller
         ];
     }
 
+    /** ตรวจรหัสผ่าน + ยืนยันรหัสผ่าน คืนรหัสผ่านที่ผ่านการตรวจ หรือ null ถ้าไม่ผ่าน */
+    private function validatePassword(array $input, bool $required): ?string
+    {
+        $password = (string) ($input['password'] ?? '');
+        $confirm  = (string) ($input['password_confirm'] ?? '');
+
+        if (!$required && $password === '' && $confirm === '') {
+            return null;
+        }
+        if (mb_strlen($password) < 8) {
+            $this->flash('error', 'รหัสผ่านต้องมีอย่างน้อย 8 ตัวอักษร');
+            return null;
+        }
+        if ($password !== $confirm) {
+            $this->flash('error', 'รหัสผ่านทั้งสองช่องไม่ตรงกัน');
+            return null;
+        }
+        return $password;
+    }
+
     /** กันแก้ไข/ปิดใช้งานบัญชีตนเอง และกันไม่ให้เหลือ super_admin ที่ active 0 คน (redirect หากถูกบล็อก) */
     private function guardSelfAndLastAdmin(int $targetId, array $existing, string $newRole, bool $newActive, string $redirect): void
     {
@@ -220,20 +242,4 @@ final class UserController extends Controller
         }
     }
 
-    private function sendInviteEmail(array $user): void
-    {
-        $token   = bin2hex(random_bytes(32));
-        $expires = date('Y-m-d H:i:s', time() + 3600); // 1 ชั่วโมง
-        User::setResetToken((int) $user['id'], $token, $expires);
-
-        $link = config('app.url') . '/admin/reset/' . $token;
-        $body = '<div style="font-family:sans-serif;line-height:1.7">'
-              . '<h2>ยินดีต้อนรับสู่ระบบจัดการเว็บไซต์โรงเรียน</h2>'
-              . '<p>เรียน ' . Controller::e($user['name']) . '</p>'
-              . '<p>มีการสร้างบัญชีผู้ใช้งานให้คุณ กรุณาคลิกลิงก์ด้านล่างเพื่อตั้งรหัสผ่านและเริ่มใช้งาน (ลิงก์หมดอายุใน 1 ชั่วโมง):</p>'
-              . '<p><a href="' . $link . '" style="background:#B01E28;color:#fff;padding:10px 18px;border-radius:8px;text-decoration:none">ตั้งรหัสผ่าน</a></p>'
-              . '<p>หรือคัดลอกลิงก์นี้: <br>' . $link . '</p></div>';
-
-        Mailer::send($user['email'], 'บัญชีผู้ใช้งานใหม่ — ระบบเว็บไซต์โรงเรียน', $body);
-    }
 }

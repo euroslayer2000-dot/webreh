@@ -75,6 +75,8 @@ $router->get('/admin/forgot',       'Admin\AuthController@showForgot');
 $router->post('/admin/forgot',      'Admin\AuthController@sendReset');
 $router->get('/admin/reset/{token}',  'Admin\AuthController@showReset');
 $router->post('/admin/reset/{token}', 'Admin\AuthController@resetPassword');
+$router->get('/admin/change-password',  'Admin\AuthController@showChangePassword');
+$router->post('/admin/change-password', 'Admin\AuthController@changePassword');
 
 // ---------- หลังบ้าน: แดชบอร์ด ----------
 $router->get('/admin',           'Admin\DashboardController@index');
@@ -135,7 +137,6 @@ $router->get('/admin/users/edit/{id}',           'Admin\UserController@edit');
 $router->post('/admin/users/update/{id}',        'Admin\UserController@update');
 $router->post('/admin/users/toggle/{id}',        'Admin\UserController@toggleActive');
 $router->post('/admin/users/delete/{id}',        'Admin\UserController@delete');
-$router->post('/admin/users/resend-invite/{id}', 'Admin\UserController@resendInvite');
 
 /* ---------- ปล่อยงานให้ router ---------- */
 // ตัด base path ของซับโฟลเดอร์ออกก่อนส่งให้ router (รองรับทั้งรันที่ root

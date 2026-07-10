@@ -44,9 +44,19 @@ $role = (string) $val('role', 'editor');
         <input type="hidden" name="is_active" value="<?= $active ? '1' : '0' ?>">
         <div class="form-hint">ไม่สามารถเปลี่ยนบทบาทหรือปิดใช้งานบัญชีของตนเองได้</div>
     <?php endif; ?>
-    <?php if (!$isEdit): ?>
-        <div class="form-hint">ระบบจะส่งอีเมลลิงก์ให้ผู้ใช้งานตั้งรหัสผ่านด้วยตนเอง</div>
-    <?php endif; ?>
+    <div class="form-group">
+        <label for="password"><?= $isEdit ? 'ตั้งรหัสผ่านใหม่' : 'รหัสผ่านเริ่มต้น *' ?></label>
+        <input type="password" id="password" name="password" class="form-control" minlength="8" <?= $isEdit ? '' : 'required' ?>>
+    </div>
+    <div class="form-group">
+        <label for="password_confirm">ยืนยันรหัสผ่าน<?= $isEdit ? '' : 'เริ่มต้น' ?><?= $isEdit ? '' : ' *' ?></label>
+        <input type="password" id="password_confirm" name="password_confirm" class="form-control" minlength="8" <?= $isEdit ? '' : 'required' ?>>
+    </div>
+    <div class="form-hint">
+        <?= $isEdit
+            ? 'เว้นว่างไว้หากไม่ต้องการเปลี่ยนรหัสผ่าน หากตั้งใหม่ ผู้ใช้งานจะถูกบังคับให้เปลี่ยนรหัสผ่านอีกครั้งตอนล็อกอินครั้งถัดไป'
+            : 'ผู้ใช้งานจะถูกบังคับให้เปลี่ยนรหัสผ่านนี้ทันทีตอนล็อกอินครั้งแรก' ?>
+    </div>
     <div class="form-actions">
         <button type="submit" class="btn btn-primary"><?= $isEdit ? 'บันทึกการแก้ไข' : 'เพิ่มผู้ใช้งาน' ?></button>
         <a href="<?= $base ?>/admin/users" class="btn btn-ghost">ยกเลิก</a>
