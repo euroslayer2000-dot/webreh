@@ -127,6 +127,16 @@ $router->get('/admin/contacts',              'Admin\ContactController@index');
 $router->get('/admin/contacts/{id}',         'Admin\ContactController@show');
 $router->post('/admin/contacts/delete/{id}', 'Admin\ContactController@delete');
 
+// ---------- หลังบ้าน: ผู้ใช้งาน (super_admin เท่านั้น) ----------
+$router->get('/admin/users',                     'Admin\UserController@index');
+$router->get('/admin/users/create',              'Admin\UserController@create');
+$router->post('/admin/users/store',              'Admin\UserController@store');
+$router->get('/admin/users/edit/{id}',           'Admin\UserController@edit');
+$router->post('/admin/users/update/{id}',        'Admin\UserController@update');
+$router->post('/admin/users/toggle/{id}',        'Admin\UserController@toggleActive');
+$router->post('/admin/users/delete/{id}',        'Admin\UserController@delete');
+$router->post('/admin/users/resend-invite/{id}', 'Admin\UserController@resendInvite');
+
 /* ---------- ปล่อยงานให้ router ---------- */
 // ตัด base path ของซับโฟลเดอร์ออกก่อนส่งให้ router (รองรับทั้งรันที่ root
 // เช่น http://example.com/ และรันในซับโฟลเดอร์ เช่น http://localhost/school-website/public/)

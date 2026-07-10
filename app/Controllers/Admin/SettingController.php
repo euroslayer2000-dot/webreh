@@ -28,7 +28,7 @@ final class SettingController extends Controller
 
     public function index(): void
     {
-        Auth::require();
+        Auth::requireRole(['super_admin']);
         $this->view('admin/settings/index', [
             'pageTitle' => 'ตั้งค่าเว็บไซต์',
             'settings'  => Setting::all(),
@@ -37,7 +37,7 @@ final class SettingController extends Controller
 
     public function update(): void
     {
-        Auth::require();
+        Auth::requireRole(['super_admin']);
         if (!Csrf::verify($_POST['csrf_token'] ?? null)) {
             $this->flash('error', 'เซสชันหมดอายุ กรุณาลองใหม่');
             $this->redirect('/admin/settings');

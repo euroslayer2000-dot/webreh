@@ -61,4 +61,22 @@ final class Auth
             exit;
         }
     }
+
+    /** เช็คว่า role ปัจจุบันอยู่ในรายการที่อนุญาตหรือไม่ */
+    public static function hasRole(array $roles): bool
+    {
+        $role = self::user()['role'] ?? null;
+        return $role !== null && in_array($role, $roles, true);
+    }
+
+    /** บังคับทั้งล็อกอินและจำกัด role — ใช้ในหน้าที่สงวนไว้ เช่น ตั้งค่าเว็บไซต์ / จัดการผู้ใช้งาน */
+    public static function requireRole(array $roles): void
+    {
+        self::require();
+        if (!self::hasRole($roles)) {
+            $_SESSION['flash'][] = ['type' => 'error', 'message' => 'คุณไม่มีสิทธิ์เข้าถึงหน้านี้'];
+            header('Location: ' . config('app.url') . '/admin/dashboard');
+            exit;
+        }
+    }
 }

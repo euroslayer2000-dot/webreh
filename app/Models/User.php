@@ -98,4 +98,92 @@ final class User
         );
         $stmt->execute(['p' => $passwordHash, 'id' => $userId]);
     }
+
+    // ---------- จัดการผู้ใช้งาน (Phase 4) ----------
+
+    public static function all(): array
+    {
+        $stmt = Database::connection()->query(
+            'SELECT id, name, email, role, is_active, created_at FROM users ORDER BY name'
+        );
+        return $stmt->fetchAll();
+    }
+
+    public static function find(int $id): ?array
+    {
+        $stmt = Database::connection()->prepare('SELECT * FROM users WHERE id = :id LIMIT 1');
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    public static function emailExists(string $email, ?int $excludeId = null): bool
+    {
+        $sql = 'SELECT id FROM users WHERE email = :email';
+        $params = ['email' => $email];
+        if ($excludeId !== null) {
+            $sql .= ' AND id != :id';
+            $params['id'] = $excludeId;
+        }
+        $stmt = Database::connection()->prepare($sql . ' LIMIT 1');
+        $stmt->execute($params);
+        return (bool) $stmt->fetch();
+    }
+
+    /** สร้างผู้ใช้ใหม่ (password_hash เป็นค่าสุ่มชั่วคราว รอผู้ใช้ตั้งรหัสผ่านผ่านลิงก์เชิญ) */
+    public static function create(array $data): int
+    {
+        $stmt = Database::connection()->prepare(
+            'INSERT INTO users (name, email, password_hash, role, is_active)
+             VALUES (:name, :email, :password_hash, :role, :is_active)'
+        );
+        $stmt->execute([
+            'name'          => $data['name'],
+            'email'         => $data['email'],
+            'password_hash' => $data['password_hash'],
+            'role'          => $data['role'],
+            'is_active'     => $data['is_active'],
+        ]);
+        return (int) Database::connection()->lastInsertId();
+    }
+
+    /** แก้ไขข้อมูลผู้ใช้ (ไม่แตะ password_hash) */
+    public static function update(int $id, array $data): void
+    {
+        $stmt = Database::connection()->prepare(
+            'UPDATE users SET name = :name, email = :email, role = :role, is_active = :is_active WHERE id = :id'
+        );
+        $stmt->execute([
+            'name'      => $data['name'],
+            'email'     => $data['email'],
+            'role'      => $data['role'],
+            'is_active' => $data['is_active'],
+            'id'        => $id,
+        ]);
+    }
+
+    public static function setActive(int $id, bool $active): void
+    {
+        $stmt = Database::connection()->prepare('UPDATE users SET is_active = :a WHERE id = :id');
+        $stmt->execute(['a' => $active ? 1 : 0, 'id' => $id]);
+    }
+
+    public static function delete(int $id): void
+    {
+        $stmt = Database::connection()->prepare('DELETE FROM users WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+    }
+
+    /** จำนวน super_admin ที่ active อยู่ (ใช้กันไม่ให้เหลือ 0 คน) */
+    public static function countActiveSuperAdmins(?int $excludeId = null): int
+    {
+        $sql = "SELECT COUNT(*) FROM users WHERE role = 'super_admin' AND is_active = 1";
+        $params = [];
+        if ($excludeId !== null) {
+            $sql .= ' AND id != :id';
+            $params['id'] = $excludeId;
+        }
+        $stmt = Database::connection()->prepare($sql);
+        $stmt->execute($params);
+        return (int) $stmt->fetchColumn();
+    }
 }

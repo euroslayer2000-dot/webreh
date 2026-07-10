@@ -52,7 +52,10 @@ $isActive = fn(string $p) => str_contains((string) $current, $p) ? 'active' : ''
                 <li><a class="<?= $isActive('/admin/banners') ?>" href="<?= $base ?>/admin/banners">🎞️ แบนเนอร์</a></li>
                 <li><a class="<?= $isActive('/admin/contacts') ?>" href="<?= $base ?>/admin/contacts">✉️ กล่องข้อความ
                     <?php if ($unread > 0): ?><span class="nav-badge"><?= $unread ?></span><?php endif; ?></a></li>
+                <?php if (Auth::hasRole(['super_admin'])): ?>
+                <li><a class="<?= $isActive('/admin/users') ?>" href="<?= $base ?>/admin/users">👤 ผู้ใช้งาน</a></li>
                 <li><a class="<?= $isActive('/admin/settings') ?>" href="<?= $base ?>/admin/settings">⚙️ ตั้งค่าเว็บไซต์</a></li>
+                <?php endif; ?>
                 <li><a href="<?= $base ?>/" target="_blank">🌐 ดูเว็บไซต์</a></li>
             </ul>
             <div class="sidebar-foot">
